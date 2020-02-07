@@ -1,0 +1,18 @@
+{
+#	"root": "src/"
+	"plugins": [
+		"theme-comscore",
+		"auto-summary"
+	],
+    "pluginsConfig": {
+      "auto-summary": {
+        "parts": { 
+           "README.md": "简介",
+           "book/*.md": "Part I 书籍",
+		   "note/*.md": "Part II 笔记",
+		   "other/*.md": "Part III 源码参考"
+        }      
+      }
+	}
+}
+

@@ -1,47 +1,35 @@
 language: node_js
-
 node_js:
-  - "9"
+  - "10"
+cache: npm
 
-# 缓存依赖
-cache:
-  directories:
-    - $HOME/.npm
+notifications:
+  email:
+    recipients:
+      - 412947296@qq.com # 设置通知邮件
+    on_success: change
+    on_failure: always
 
-before_install:
-  - export TZ='Asia/Shanghai' # 更改时区
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
-  - sudo apt update -qq
-  - sudo apt-get install calibre xvfb -y
-  - sudo apt-get install ttf-wqy-*
-  - echo '#!/bin/bash' | sudo tee -a /usr/local/bin/ebook-convert
-  - echo 'Run xvfb-run /usr/bin/ebook-convert $@' | sudo tee -a /usr/local/bin/ebook-convert
-  - echo 'xvfb-run /usr/bin/ebook-convert "$@"' | sudo tee -a /usr/local/bin/ebook-convert
-  - sudo chmod +x /usr/local/bin/ebook-convert
-
-# 依赖安装
 install:
-  - npm install gitbook-cli -g
-  # 安装 gitbook 插件
+  - npm install -g gitbook-cli
   - gitbook install
 
-# 构建脚本
 script:
-    # 自定义输出目录 gitbook build src dest
-  - gitbook build ./ ./docs
-  - gitbook pdf ./ ./learning-book.pdf
+  - gitbook build
 
-# 分支白名单
+after_script:
+  - cd _book
+  - git init
+  - git remote add origin https://${REF}
+  - git add .
+  - git commit -m "Updated By Travis-CI With Build $TRAVIS_BUILD_NUMBER For Github Pages"
+  - git push --force --quiet "https://${TOKEN}@${REF}" master:gh-pages
+
 branches:
   only:
-    - master # 只对 master 分支进行构建
+    - master
 
-# GitHub Pages 部署
-deploy:
-  provider: releases
-  skip_cleanup: true
-  api_key: a0b3305554c6a5cae78e99be7ad35b6c7a021b29
-  file:
-     - learning-book.pdf
-
+env:
+  global:
+    - REF=github.com/luoxding/luoxding.github.io.git # 设置 github 地址
 
