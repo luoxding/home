@@ -40,6 +40,7 @@ branches:
 deploy:
   provider: releases
   skip_cleanup: true
+  api_key: a0b3305554c6a5cae78e99be7ad35b6c7a021b29
   file:
      - learning-book.pdf
 
